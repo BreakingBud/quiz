@@ -175,7 +175,7 @@ questions.extend([
 
 def show_question(index):
     st.write(f"**Question {index + 1}: {questions[index]['question']}**")
-    user_answer = st.radio("Select your answer:", questions[index]['options'], key=index)
+    user_answer = st.radio("Select your answer:", questions[index]['options'], key=f"answer_{index}")
     return user_answer
 
 def main():
@@ -201,3 +201,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
