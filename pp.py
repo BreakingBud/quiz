@@ -177,7 +177,7 @@ questions.extend([
 if "score" not in st.session_state:
     st.session_state.score = 0
     st.session_state.answered_questions = 0
-    st.session_state.answers = [None] * len(questions)  # To track if each question was answered
+    st.session_state.answers = [None] * len(questions)  # Initialize list to track answers for all questions
 
 def main():
     st.title("Diagnostic Analytics Midterm MCQs")
