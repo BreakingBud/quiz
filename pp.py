@@ -173,32 +173,44 @@ questions.extend([
     }
 ])
 
+
+# Initialize session state for score and answered questions
+if "score" not in st.session_state:
+    st.session_state.score = 0
+    st.session_state.answered_questions = 0
+    st.session_state.correct_messages = 0  # Track correct "Good job!" messages displayed
+
 def main():
     st.title("Diagnostic Analytics Midterm MCQs")
-
-    if "score" not in st.session_state:
-        st.session_state.score = 0
-        st.session_state.answered_questions = 0
-
+    
+    # Display the real-time score in the sidebar
+    st.sidebar.header("Real-Time Score")
+    st.sidebar.write(f"Score: {st.session_state.score}/{len(questions)}")
+    
+    # Iterate over the questions
     for i, question in enumerate(questions):
         st.write(f"### Question {i + 1}: {question['question']}")
         user_answer = st.radio(f"Select your answer for Question {i + 1}:", question['options'], key=f"q_{i}")
-        
+
+        # Submit button for each question
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}"):
             if user_answer == question['answer']:
-                st.success(f"Correct! {question['explanation']}")
+                if st.session_state.correct_messages < 5:
+                    st.success("Good job!")
+                    st.session_state.correct_messages += 1
+                st.success(f"Correct! {question['explanation']}")  # Green message with explanation
                 if st.session_state.answered_questions <= i:
-                    st.session_state.score += 1
+                    st.session_state.score += 1  # Update score for correct answer
                     st.session_state.answered_questions += 1
             else:
-                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
+                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")  # Red message for incorrect
+
                 if st.session_state.answered_questions <= i:
                     st.session_state.answered_questions += 1
 
-    # Display final score after all questions are answered
+    # Display the real-time score in the main section too (after all questions are answered)
     if st.session_state.answered_questions == len(questions):
         st.write(f"### Your final score is: {st.session_state.score}/{len(questions)}")
 
 if __name__ == "__main__":
     main()
-
