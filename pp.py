@@ -173,41 +173,32 @@ questions.extend([
     }
 ])
 
-def show_question(index):
-    st.write(f"**Question {index + 1}: {questions[index]['question']}**")
-    user_answer = st.radio("Select your answer:", questions[index]['options'], key=f"answer_{index}")
-    return user_answer
-
 def main():
-    st.title("Diagnostic Analytics Midterm MCQs with Explanations")
+    st.title("Diagnostic Analytics Midterm MCQs")
 
-    # Initialize session state to track answers and score
-    if "responses" not in st.session_state:
-        st.session_state.responses = [""] * len(questions)
-        st.session_state.scores = [0] * len(questions)  # Track correct/incorrect for each question
-
-    score = 0
+    if "score" not in st.session_state:
+        st.session_state.score = 0
+        st.session_state.answered_questions = 0
 
     for i, question in enumerate(questions):
-        st.markdown("---")
-        user_answer = show_question(i)
-
-        # Store the user's response in the session state when they submit
+        st.write(f"### Question {i + 1}: {question['question']}")
+        user_answer = st.radio(f"Select your answer for Question {i + 1}:", question['options'], key=f"q_{i}")
+        
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}"):
-            st.session_state.responses[i] = user_answer
-
-            if user_answer == question["answer"]:
-                st.session_state.scores[i] = 1  # Correct answer, set score to 1
-                st.success(f"Correct! {question['explanation']}")  # Green success message
+            if user_answer == question['answer']:
+                st.success(f"Correct! {question['explanation']}")
+                if st.session_state.answered_questions <= i:
+                    st.session_state.score += 1
+                    st.session_state.answered_questions += 1
             else:
-                st.session_state.scores[i] = 0  # Incorrect answer, set score to 0
-                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")  # Red error message
+                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
+                if st.session_state.answered_questions <= i:
+                    st.session_state.answered_questions += 1
 
-    # Calculate the final score
-    score = sum(st.session_state.scores)
-    st.write(f"Your final score is: {score}/{len(questions)}")
+    # Display final score after all questions are answered
+    if st.session_state.answered_questions == len(questions):
+        st.write(f"### Your final score is: {st.session_state.score}/{len(questions)}")
 
 if __name__ == "__main__":
     main()
-
 
