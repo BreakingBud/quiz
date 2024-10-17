@@ -181,23 +181,31 @@ def show_question(index):
 def main():
     st.title("Diagnostic Analytics Midterm MCQs with Explanations")
 
-    # Initialize session state to track answers
+    # Initialize session state to track answers and score
     if "responses" not in st.session_state:
         st.session_state.responses = [""] * len(questions)
+        st.session_state.scores = [0] * len(questions)  # Track correct/incorrect for each question
 
     score = 0
+
     for i, question in enumerate(questions):
         st.markdown("---")
         user_answer = show_question(i)
+
+        # Store the user's response in the session state when they submit
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}"):
+            st.session_state.responses[i] = user_answer
+
             if user_answer == question["answer"]:
+                st.session_state.scores[i] = 1  # Correct answer, set score to 1
                 st.success(f"Correct! {question['explanation']}")
-                score += 1
             else:
+                st.session_state.scores[i] = 0  # Incorrect answer, set score to 0
                 st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
 
-    # Display final score
-    st.write(f"Your score: {score}/{len(questions)}")
+    # Calculate the final score
+    score = sum(st.session_state.scores)
+    st.write(f"Your final score is: {score}/{len(questions)}")
 
 if __name__ == "__main__":
     main()
