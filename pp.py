@@ -190,14 +190,16 @@ def main():
         st.write(f"### Question {i + 1}: {question['question']}")
         user_answer = st.radio(f"Select your answer for Question {i + 1}:", question['options'], key=f"q_{i}")
 
-        # Show the correct answer and explanation if user clicks "Show Answer"
+        # Submit answer for each question
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}"):
+            # If answer is correct
             if user_answer == question["answer"]:
                 st.success(f"Correct! The answer is: {question['answer']}. {question['explanation']}")
                 if st.session_state.answered_questions <= i:
                     st.session_state.score += 1  # Increase score for correct answer
                     st.session_state.answered_questions += 1
             else:
+                # If answer is incorrect
                 st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
                 if st.session_state.answered_questions <= i:
                     st.session_state.answered_questions += 1
