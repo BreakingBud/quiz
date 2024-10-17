@@ -198,10 +198,10 @@ def main():
 
             if user_answer == question["answer"]:
                 st.session_state.scores[i] = 1  # Correct answer, set score to 1
-                st.success(f"Correct! {question['explanation']}")
+                st.success(f"Correct! {question['explanation']}")  # Green success message
             else:
                 st.session_state.scores[i] = 0  # Incorrect answer, set score to 0
-                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
+                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")  # Red error message
 
     # Calculate the final score
     score = sum(st.session_state.scores)
@@ -209,4 +209,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
