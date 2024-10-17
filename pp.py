@@ -57,7 +57,10 @@ questions = [
         "answer": "C",
         "explanation": "Modes, views, and components in AI Studio allow users to shift between different stages of workflow design for building processes."
     }
-    questions.extend([
+]
+
+# Add more questions here with explanations
+questions.extend([
     {
         "question": "What is the primary purpose of the 'Reading Data' technique in AI Studio?",
         "options": [
@@ -169,8 +172,6 @@ questions = [
         "explanation": "The 'Drill Down' technique helps analyze data at a more granular level, enabling deeper insights into specific data points."
     }
 ])
-
-]
 
 def show_question(index):
     st.write(f"**Question {index + 1}: {questions[index]['question']}**")
