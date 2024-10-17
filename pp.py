@@ -177,6 +177,7 @@ questions.extend([
 if "score" not in st.session_state:
     st.session_state.score = 0
     st.session_state.answered_questions = 0
+    st.session_state.answers = [None] * len(questions)  # To track if each question was answered
 
 def main():
     st.title("Diagnostic Analytics Midterm MCQs")
@@ -188,24 +189,22 @@ def main():
     # Iterate over the questions
     for i, question in enumerate(questions):
         st.write(f"### Question {i + 1}: {question['question']}")
-        user_answer = st.radio(f"Select your answer for Question {i + 1}:", question['options'], key=f"q_{i}")
+        
+        # If the question has already been answered, disable radio buttons
+        disabled = st.session_state.answers[i] is not None
+        user_answer = st.radio(f"Select your answer for Question {i + 1}:", question['options'], key=f"q_{i}", disabled=disabled)
 
-        # Submit answer for each question
-        if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}"):
-            # If answer is correct
+        # Show the answer when the user clicks "Submit Answer"
+        if st.button(f"Submit Answer for Question {i + 1}", key=f"submit_{i}") and st.session_state.answers[i] is None:
             if user_answer == question["answer"]:
                 st.success(f"Correct! The answer is: {question['answer']}. {question['explanation']}")
-                if st.session_state.answered_questions <= i:
-                    st.session_state.score += 1  # Increase score for correct answer
-                    st.session_state.answered_questions += 1
+                st.session_state.score += 1  # Update the score for a correct answer
             else:
-                # If answer is incorrect
-                st.error(f"Incorrect. The correct answer is: {question['answer']}. {question['explanation']}")
-                if st.session_state.answered_questions <= i:
-                    st.session_state.answered_questions += 1
+                st.error(f"Incorrect! The correct answer is: {question['answer']}. {question['explanation']}")
+            st.session_state.answers[i] = user_answer  # Mark question as answered
 
     # Display the final score if all questions are answered
-    if st.session_state.answered_questions == len(questions):
+    if all(answer is not None for answer in st.session_state.answers):
         st.write(f"### Your final score is: {st.session_state.score}/{len(questions)}")
 
 if __name__ == "__main__":
